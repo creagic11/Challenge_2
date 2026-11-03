@@ -1,0 +1,37 @@
+# Data must never be committed (challenge §4, §14)
+*.pcap
+*.mat
+derived/
+data/
+datasets/
+*.npy
+*.npz
+
+# Large / regenerable artefacts
+artifacts/*.pt
+artifacts/cache/
+*.ckpt
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+__MACOSX/
+Thumbs.db
+.vscode/
+.idea/
+
+# LaTeX build files
+report/*.aux
+report/*.log
+report/*.out
+report/*.synctex.gz
+report/*.bbl
+report/*.blg

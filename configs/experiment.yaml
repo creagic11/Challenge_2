@@ -1,0 +1,42 @@
+# STRIDE — CS60055 Hackathon 2 pipeline configuration.
+# All paths are relative to the repository root (code_files/) unless absolute.
+
+paths:
+  room_A_raw: ../datasets/exp_2_modified/realdata/input_data/30ms/csidata   # Experiment 2 (PCAP), read-only
+  room_B_raw: ../datasets/exp_3_modified/Data                              # Experiment 3 (CSV), read-only
+  derived: ../derived                                                       # all derived data (git-ignored)
+  results: results
+  figures: figures
+  artifacts: artifacts
+  splits: configs/splits
+
+seeds:
+  global: 0
+  roomB_validation: 42          # challenge §9 public seed
+  dev_holdout: 0
+  ssl: [0, 1, 2]
+  episodes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+data:
+  n_subcarriers: 256
+  room_B_patterns:              # challenge §9 documented candidate patterns
+    empty: "Empty_Amp_*.csv"
+    lying: "Lying_Amp_*.csv"
+    sit: "Sitting_Amp_*.csv"
+    stand: "Standing_Amp_*.csv"
+    walk: "Walking_*.csv"
+  room_B_validation_per_class: 25
+  dev_holdout_fraction: 0.2
+
+window:
+  length: 150
+  official_position: center     # deterministic official window per capture
+  mode: consecutive             # consecutive if >=150 valid obs, else full-capture resampling (windowing.py)
+  train_crop: random            # random crops of dev captures for training
+
+tasks:
+  K: [1, 5, 10, 20]
+  shared: [sit, stand, walk]
+  exclusive:
+    A: [sitdown, standup, fall]
+    B: [empty, lying]
