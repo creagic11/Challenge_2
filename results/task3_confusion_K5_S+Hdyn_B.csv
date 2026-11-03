@@ -1,0 +1,6 @@
+,pred_empty,pred_lying,pred_sit,pred_stand,pred_walk
+true_empty,399,52,40,229,30
+true_lying,51,407,65,135,92
+true_sit,0,80,346,105,219
+true_stand,27,71,190,164,298
+true_walk,139,35,81,309,186

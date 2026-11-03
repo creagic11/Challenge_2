@@ -1,0 +1,7 @@
+,pred_fall,pred_sit,pred_sitdown,pred_stand,pred_standup,pred_walk
+true_fall,465,0,132,21,101,31
+true_sit,375,3,234,31,73,34
+true_sitdown,199,1,266,45,108,131
+true_stand,225,0,125,86,175,139
+true_standup,176,15,152,23,357,27
+true_walk,0,26,37,524,44,119

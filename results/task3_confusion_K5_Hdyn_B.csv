@@ -1,0 +1,6 @@
+,pred_empty,pred_lying,pred_sit,pred_stand,pred_walk
+true_empty,92,48,26,61,23
+true_lying,24,77,24,34,91
+true_sit,18,30,143,18,41
+true_stand,21,46,26,37,120
+true_walk,36,60,27,91,36
