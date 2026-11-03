@@ -8,7 +8,7 @@ datasets/
 *.npz
 
 # Large / regenerable artefacts
-artifacts/*.pt
+# encoder weights (~0.5 MB each) are committed so Tasks 2/3 reproduce without retraining
 artifacts/cache/
 *.ckpt
 
@@ -35,3 +35,5 @@ report/*.out
 report/*.synctex.gz
 report/*.bbl
 report/*.blg
+report/*.fls
+report/*.fdb_latexmk
