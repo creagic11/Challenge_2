@@ -50,7 +50,7 @@ def main():
     man = pd.DataFrame(rows)
     man.to_csv(Path(P["results"]) / "windows_manifest.csv", index=False)
     np.savez(Path(P["derived"]) / "cache" / "official_windows.npz", W=W,
-             window_id=man.window_id.values)
+             window_id=np.array(man.window_id.tolist(), dtype="U16"))
     print(man.groupby(["room", "split", "method"]).size())
 
 

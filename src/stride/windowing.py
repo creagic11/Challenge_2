@@ -46,7 +46,9 @@ def official_window(X: np.ndarray, t: np.ndarray, mode: str = "consecutive",
         s = (n - length) // 2
         return X[s:s + length].astype(np.float32), dict(method="consecutive", obs_start=s,
                                                         obs_end=s + length, n_valid=n)
-    W = resample_uniform(X, t, length)
+    # round: interpolated values are mapped back onto the integer amplitude grid used by
+    # all observations, so "integer vs non-integer" cannot act as a room cue
+    W = np.rint(resample_uniform(X, t, length))
     return W.astype(np.float32), dict(method="resampled_full", obs_start=0, obs_end=n, n_valid=n)
 
 
@@ -60,4 +62,4 @@ def random_crop(X: np.ndarray, t: np.ndarray, rng: np.random.Generator, mode: st
     span = t[-1] - t[0]
     frac = rng.uniform(min_frac, 1.0)
     a = t[0] + rng.uniform(0, 1 - frac) * span
-    return resample_uniform(X, t, length, a, a + frac * span).astype(np.float32)
+    return np.rint(resample_uniform(X, t, length, a, a + frac * span)).astype(np.float32)

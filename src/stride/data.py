@@ -32,7 +32,7 @@ class Dataset:
         self.man = pd.read_csv(Path(P["results"]) / "windows_manifest.csv")
         self.man["dev_holdout"] = self.man.dev_holdout.astype(str) == "True"
         z = np.load(Path(P["derived"]) / "cache" / "official_windows.npz")
-        assert (z["window_id"] == self.man.window_id.values).all()
+        assert (z["window_id"] == np.array(self.man.window_id.tolist(), dtype="U16")).all()
         self.W = z["W"]
         self._captures = None
 

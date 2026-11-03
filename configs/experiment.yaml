@@ -31,7 +31,7 @@ data:
 window:
   length: 150
   official_position: center     # deterministic official window per capture
-  mode: consecutive             # consecutive if >=150 valid obs, else full-capture resampling (windowing.py)
+  mode: full                    # whole capture resampled to 150 points (both rooms); see docs/data_findings.md
   train_crop: random            # random crops of dev captures for training
 
 tasks:
