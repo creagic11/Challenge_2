@@ -1,0 +1,10 @@
+,A,B
+n_decoded,234239.0,600500.0
+n_valid,68867.0,561304.0
+rej_fixed_pattern,118013.0,0.0
+rej_partial_band,47359.0,39196.0
+rej_duplicate_obs,0.0,0.0
+rej_non_finite,0.0,0.0
+rej_all_zero,0.0,0.0
+rej_file_truncated_packet,2.0,0.0
+rej_file_no_udp_payload,2.0,0.0
