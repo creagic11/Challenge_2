@@ -1,0 +1,6 @@
+feature_set,n_features,val_accuracy
+static_profile_all256,256,1.0
+static_profile_data_bins,242,1.0
+dynamic_motion_energy,242,1.0
+texture_autocorr_probe,4,0.9963636363636363
+quantisation_probe,3,0.2727272727272727

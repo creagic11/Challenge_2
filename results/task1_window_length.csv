@@ -1,0 +1,15 @@
+L,features,val_accuracy
+1,static,0.9490909090909091
+2,static,0.9672727272727273
+5,static,0.9854545454545455
+5,dynamic,0.9963636363636363
+10,static,0.9963636363636363
+10,dynamic,0.9927272727272727
+25,static,1.0
+25,dynamic,1.0
+50,static,1.0
+50,dynamic,1.0
+100,static,1.0
+100,dynamic,1.0
+150,static,1.0
+150,dynamic,1.0
