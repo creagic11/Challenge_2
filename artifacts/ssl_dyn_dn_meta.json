@@ -1,0 +1,9 @@
+{
+ "kind": "dyn_dn",
+ "seeds": [
+  2
+ ],
+ "epochs": 60,
+ "scale": 0.2619331479072571,
+ "n_dev_captures": 2010
+}

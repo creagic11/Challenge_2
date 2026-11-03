@@ -1,0 +1,8 @@
+kind=dyn_dn seed=1 captures=2010 scale=0.2619
+epoch   0 loss 4.4226 (28s)
+epoch  10 loss 2.3949 (312s)
+epoch  20 loss 2.1347 (641s)
+epoch  30 loss 2.0237 (916s)
+epoch  40 loss 1.9590 (1188s)
+epoch  50 loss 1.9352 (1464s)
+epoch  59 loss 1.9425 (1711s)

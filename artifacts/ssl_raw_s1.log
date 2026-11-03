@@ -1,0 +1,8 @@
+kind=raw seed=1 captures=2010 scale=0.4525
+epoch   0 loss 3.6902 (14s)
+epoch  10 loss 1.8998 (157s)
+epoch  20 loss 1.7968 (300s)
+epoch  30 loss 1.7301 (467s)
+epoch  40 loss 1.6718 (616s)
+epoch  50 loss 1.6711 (763s)
+epoch  59 loss 1.6498 (893s)

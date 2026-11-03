@@ -1,0 +1,9 @@
+kind=dyn_dn seed=2 captures=2010 scale=0.2619
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+epoch   0 loss 4.3268 (27s)
+epoch  10 loss 2.3642 (297s)
+epoch  20 loss 2.1310 (569s)
+epoch  30 loss 2.0107 (837s)
+epoch  40 loss 1.9724 (1101s)
+epoch  50 loss 1.9418 (1361s)
+epoch  59 loss 1.9243 (1594s)
