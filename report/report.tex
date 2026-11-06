@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[a4paper,margin=0.9in]{geometry}
 \usepackage[section]{placeins}
+\usepackage{array}
 \usepackage{graphicx,booktabs,amsmath,amssymb,xcolor,hyperref,tikz,multirow,caption,enumitem}
 \usetikzlibrary{arrows.meta,positioning,calc}
 \captionsetup{font=small,labelfont=bf}
@@ -11,7 +12,7 @@
 
 \title{\vspace{-1.2em}\textbf{STRIDE: Static-profile Routing with Invariant Dynamics Encoding}\\[2pt]
 \large Cross-room few-label WiFi-CSI activity recognition --- CS60055 Hackathon 2}
-\author{Anubhav (solo group)}
+\author{Anubhav (23EE10091)}
 \date{}
 
 \begin{document}
@@ -22,7 +23,7 @@
 We build a fully Python pipeline from raw Nexmon PCAP (Room~A) and amplitude CSV (Room~B) to
 room identification, self-supervised representation learning and few-label cross-room activity
 recognition. Inspecting the data rather than assuming its format exposed three facts that shape everything
-downstream: (i) half of the Room-A packets are a fixed, activity-independent pattern; (ii) both rooms mix
+downstream: (i) half of the Room-A packets (sequence number \texttt{0xFFFF}) are narrow-band reports, not 80\,MHz CSI; (ii) both rooms mix
 20\,MHz frames into the 80\,MHz CSI stream, at a rate that in Room~B depends on the recording session
 (and hence on the activity); (iii) Room~A never yields 150 valid observations per capture, while
 Room~B is sampled roughly four times faster. We remove invalid observations with physical criteria that are identical for
@@ -52,7 +53,7 @@ development-only deployment artefact, random window ids, format discarded before
 \node (a) {PCAP (Room A)\\pcap\_reader};
 \node (b) [right=0.35cm of a] {CSV (Room B)\\csv reader};
 \node (d) [below=of a] {4366c0 unpack\\$\pm m\cdot2^{e}$, $|\cdot|$};
-\node (q) [below=0.32cm of $(d)!0.5!(b)$, yshift=-0.55cm] {QC: 0xFFFF pattern, 20\,MHz frames,\\malformed / duplicate rows \& captures};
+\node (q) [below=0.32cm of $(d)!0.5!(b)$, yshift=-0.55cm] {QC: 0xFFFF \& other 20\,MHz frames,\\malformed / duplicate rows \& captures};
 \node (h) [below=of q] {harmonise scale \& quantisation (B dev ref.)};
 \node (w) [below=of h] {full-capture window: 150 uniform time points};
 \node (s) [below left=0.35cm and -0.9cm of w] {static profile $s$\\$\to$ room router};
@@ -74,9 +75,13 @@ subcarriers (FFT bins 123--133) are deep nulls, and walking varies more over tim
 turn out to be in the same FFT-bin order.
 
 \paragraph{Three kinds of observation.} Figure~\ref{fig:qc} shows what the inspection revealed.
-Room-A reports strictly alternate between a normal sequence number and \texttt{0xFFFF}; the latter carry
-the same profile in every capture (mean cross-capture correlation \insCorrFixed{} versus \insCorrNormal{}
-for the normal reports), are activity-independent, about \insAmpRatio$\times$ weaker and lack guard nulls, so we reject them as zero-information
+Room-A reports strictly alternate between a normal sequence number and \texttt{0xFFFF}. The latter lack the
+80\,MHz guard nulls and concentrate their energy in the lowest 20\,MHz quarter of the band (median
+log-amplitude \insFfffBand{} above the rest of the band), i.e.\ they are narrow-band reports, most likely the other
+direction of the ping/pong exchange. Because three quarters of each such row are noise floor, their profile is
+dominated by the band mask: it is nearly the same in every capture (mean cross-capture correlation
+\insCorrFixed{} versus \insCorrNormal{} for the normal reports) and the median data-subcarrier amplitude is about
+\insAmpRatio$\times$ lower. They are not valid 256-subcarrier observations, so we reject them
 (\qcArejfixedpattern{} of \qcAndecoded{} decoded reports). Both rooms also contain \emph{narrow-band}
 frames whose energy occupies one 20\,MHz quarter of the band; we reject an observation when fewer than
 three quarters carry energy (\qcArejpartialband{} in A, \qcBrejpartialband{} in B). This matters beyond
@@ -99,7 +104,6 @@ byte-identical duplicate capture in the TA package (\texttt{stand65(1).pcap}) is
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.62\textwidth]{\figdir/qc_observation_types.png}
-\vspace{-1.6em}
 \caption{Median spectral profile of the three observation types in Room A (development data).}
 \label{fig:qc}
 \end{figure}
@@ -128,11 +132,11 @@ A stratified 20\,\% of development captures is held out internally for every tun
 \caption{Design decisions, the evidence behind them (development data unless stated) and the alternative
 we rejected.}
 \label{tab:dec}
-\begin{tabular}{p{3.6cm}p{7.8cm}p{4.6cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{7.2cm}>{\raggedright\arraybackslash}p{4.4cm}}
 \toprule
 Decision & Evidence & Rejected alternative\\
 \midrule
-Reject seq.\ 0xFFFF reports & same profile in every capture (corr.\ \insCorrFixed), activity-independent, no guard nulls & keep all packets (as a naive reader would)\\
+Reject seq.\ 0xFFFF reports & energy only in the lowest 20\,MHz quarter; no guard nulls; band-mask profile (corr.\ \insCorrFixed) & keep all packets (as a naive reader would)\\
 Reject narrow-band frames & energy in one 20\,MHz quarter; class-dependent share in Room B (session artefact) & keep (gives a spurious SIT/STAND cue)\\
 Harmonise Room-A scale \& rounding & B is integer with a fixed level; A is arbitrary-scale float & leave as is (format becomes a room cue)\\
 Full-capture windows, both rooms & A never has 150 valid observations; ablation: \winFullB{} vs \winConsecB{} on target B & 150 consecutive rows; padding (leaks length)\\
@@ -155,7 +159,6 @@ WALK is highest (\insMeDnWalk{} vs \insMeDnSit{}/\insMeDnStand), restoring the p
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.62\textwidth]{\figdir/denoise_example.png}
-\vspace{-1.6em}
 \caption{Dynamic part before and after low-rank denoising for two Room-B development windows. The
 noisy STAND session is dominated by incoherent fluctuations that disappear; coherent walking structure stays.}
 \label{fig:dn}
@@ -216,7 +219,6 @@ Features & Accuracy\\
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.55\textwidth]{\figdir/task1_window_length.png}
-\vspace{-1.0em}
 \caption{Task 1: room accuracy versus window length (same validation captures).}
 \label{fig:t1}
 \end{figure}
@@ -246,7 +248,6 @@ Representation & Room A & Room B & Joint (8) & B$\to$A sh. & A$\to$B sh.\\
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.85\textwidth]{\figdir/task3_label_efficiency.png}
-\vspace{-0.8em}
 \caption{Task 3 label efficiency (validation; mean and 95\,\% CI over seeds$\times$episodes): all classes,
 target-labelled (exclusive) classes and transferred shared classes.}
 \label{fig:le}
@@ -311,14 +312,12 @@ Variant & H & H$_d$ & S & S\,+\,H$_d$\\
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.65\textwidth]{\figdir/task3_routing.png}
-\vspace{-1.6em}
 \caption{Routing contribution (validation macro-F1).}
 \label{fig:rout}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.66\textwidth]{\figdir/task3_confusion_K5.png}
-\vspace{-0.8em}
 \caption{Confusion matrices at $K{=}5$ (accumulated over runs, row-normalised); per-class P/R/F1 in
 Table~\ref{tab:pc}.}
 \label{fig:cm}
@@ -339,7 +338,6 @@ Target & Class & P & R & F1\\
 
 \begin{figure}[!htbp]
 \centering\includegraphics[width=0.6\textwidth]{\figdir/task2_embeddings.png}
-\vspace{-0.8em}
 \caption{UMAP of validation embeddings, coloured by room (left) and activity (right). Qualitative only.}
 \label{fig:umap}
 \end{figure}
@@ -374,14 +372,15 @@ accuracy. The original paper's random 80/20 results are not comparable.
 \end{itemize}
 
 \section*{Contribution statement}
-Solo group: all work --- data engineering, modelling, experiments and report --- was carried out by the
-single group member, with AI assistance as disclosed below.
+Solo group. I set the objectives, made or approved the design decisions, reviewed the code and results, and
+committed and submitted the work. The implementation, experiments and report draft were produced with
+substantial AI assistance, as disclosed below.
 
 \section*{AI usage}
-\textit{[Author to review and adjust to reflect actual use.]} Claude (Anthropic) was used extensively as a
-coding and analysis assistant: implementing the pipeline and experiment scripts, running exploratory analyses
-of the raw data, and drafting this report. All reported numbers are produced by the committed scripts and
-can be regenerated from the raw data; no result was typed by hand.
+Claude (Anthropic) was used extensively throughout: inspecting the raw data, proposing and implementing the
+pipeline and models, running all experiments, and drafting this report. I directed the work, made or
+approved the key decisions, and reviewed the outputs. Every reported number comes from the committed
+scripts and can be regenerated from the raw data; none was typed in by hand.
 
 \section*{Software and data}
 Dataset: CSI Human Activity, IEEE DataPort~\cite{schafer}. Libraries: NumPy, SciPy, pandas,
