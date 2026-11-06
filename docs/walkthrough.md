@@ -88,18 +88,8 @@ rooms, i.e. rooms also differ by session properties (sampling rate, noise level)
   optimal transport (Sinkhorn) on the unlabelled target development pool, self-training.
 * Routing study: predicted vs oracle room vs no routing (union label space, pooled statistics).
 
-## 9. Likely viva questions
-* *Why reject the 0xFFFF reports?* Same fixed pattern in all captures, activity-independent, no guard nulls.
-* *Why not 150 consecutive observations?* Room A never has 150 valid observations; for Room B we tested it:
-  full-capture windows are better on target B and equal on target A.
-* *Is the router "too good"?* Yes — rooms differ in environment **and** session (rate, noise). We show which
-  cues separate them; single-observation static profiles alone give 95 %.
-* *Where did validation get used?* Only for reported numbers and for choosing among reported variants
-  (declared). Never for fitting, normalisation, supports or pseudo-labels.
-* *Why is cross-room SIT/STAND hard?* Both are quasi-static; posture lives mostly in the static profile,
-  which is room-specific by construction. Walk vs static transfers; sit vs stand largely does not.
 
-## 10. Results to remember (validation)
+## 9. Results to remember (validation)
 * Task 1: room accuracy 1.000 (L = 150), 0.949 from one observation; audit shows session cues too.
 * Task 2 (macro-F1, Room A / Room B): handcrafted 0.752 / 0.840, random CNN 0.553 / 0.887,
   SSL raw 0.872 / 0.987, STRIDE-SSL (denoised dynamics) 0.669 / 0.931.
@@ -110,7 +100,7 @@ rooms, i.e. rooms also differ by session properties (sampling rate, noise level)
   but lose on the combined metric; removing static-profile features hurt; SSL does not beat denoised
   handcrafted features across rooms; WALK and STAND swap across rooms.
 
-## 11. Demo checklist
+## 10. Demo checklist
 1. `pip install -r requirements.txt` (+ CPU torch).  2. `python -m pytest -q tests`.
 3. `python run_episode.py --episode <TA folder> --out predictions.csv` (raw .pcap/.csv or window .npy).
 4. If the artefact cannot be loaded: `python scripts/prepare_deployment.py` (a few minutes).
