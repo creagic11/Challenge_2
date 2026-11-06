@@ -6,10 +6,12 @@ format criterion, applied identically to both rooms where the information exists
   malformed            truncated / wrong-length packet (Room A reader)
   non_finite           NaN or inf amplitude
   all_zero             every subcarrier is exactly zero
-  fixed_pattern        Room A reports carrying sequence number 0xFFFF. Measured on
-                       development data: their profile is the same fixed pattern in
-                       every capture (cross-capture corr. 0.98) and is independent of
-                       activity, with no 80 MHz guard nulls -> zero-information.
+  fixed_pattern        Room A reports carrying sequence number 0xFFFF (strictly alternating
+                       with normal reports). Measured on development data, their energy is
+                       confined to the lowest 20 MHz quarter, like the narrow-band frames below,
+                       so they are not valid 80 MHz observations. (The reason code keeps its
+                       original name; the shared band mask is why their profile is nearly identical
+                       in every capture, cross-capture corr. 0.99.)
   partial_band         energy is confined to one or two 20 MHz quarters of the
                        80 MHz band (narrow-band frames in the ping/pong exchange).
                        Such rows carry noise on >= half of the 256 subcarriers, so they

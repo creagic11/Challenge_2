@@ -30,7 +30,7 @@ def main():
     add = lambda s, room, label, v: rows.append(dict(statistic=s, room=room, label=label, value=float(v)))
 
     # 1) 0xFFFF reports vs normal reports (Room A, every 10th development capture)
-    pf, pn, ratio, timing = [], [], [], []
+    pf, pn, ratio, timing, band = [], [], [], [], []
     for r in dev[dev.room == "A"].iloc[::10].itertuples():
         cap = read_pcap(str(Path(P["room_A_raw"]) / r.source_relpath))
         pk, _ = decode_payloads(cap.payloads)
@@ -39,6 +39,8 @@ def main():
             continue
         A = np.abs(pk.csi)
         pf.append(np.median(scale_free_log(A[ff]), 0)[DATA_BINS])
+        prof = np.fft.fftshift(np.median(scale_free_log(A[ff]), 0))   # subcarrier order -128..127
+        band.append(np.median(prof[8:58]) - np.median(prof[138:228]))  # lowest 20 MHz quarter vs rest
         pn.append(np.median(scale_free_log(A[~ff]), 0)[DATA_BINS])
         ratio.append(np.median(A[~ff][:, DATA_BINS]) / max(np.median(A[ff][:, DATA_BINS]), 1e-30))
         t = cap.timestamps[pk.packet_index]
@@ -48,6 +50,7 @@ def main():
     add("cross_capture_profile_corr_normal", "A", "all", cc(pn))
     add("median_amplitude_ratio_normal_over_0xFFFF", "A", "all", np.median(ratio))
     add("median_capture_duration_s", "A", "all", np.median([d for _, d in timing]))
+    add("0xFFFF_lowest_quarter_minus_rest_log_amp", "A", "all", np.median(band))
 
     # 2) narrow-band share per room/class (from the QC table, all development captures)
     qc = pd.read_csv(Path(P["results"]) / "qc_captures.csv", keep_default_na=False)

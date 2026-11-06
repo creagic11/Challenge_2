@@ -3,6 +3,7 @@ cross_capture_profile_corr_0xFFFF,A,all,0.9850048658188871
 cross_capture_profile_corr_normal,A,all,0.22275460865897942
 median_amplitude_ratio_normal_over_0xFFFF,A,all,33.59246121736401
 median_capture_duration_s,A,all,3.9202736616134644
+0xFFFF_lowest_quarter_minus_rest_log_amp,A,all,5.307006616545018
 narrowband_share_of_non_fixed_rows,A,fall,0.476512511054466
 median_valid_observations,A,fall,57.0
 narrowband_share_of_non_fixed_rows,A,sit,0.3939494496985786

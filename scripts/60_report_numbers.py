@@ -129,7 +129,7 @@ def main():
     (out / "tab_perclass.tex").write_text("\n".join(lines[:-1]) + "\n")
     # QC table
     qcs = pd.read_csv(res / "qc_summary.csv", index_col=0)
-    rows = [("decoded observations", "n_decoded"), ("rejected: seq.\\ 0xFFFF fixed pattern", "rej_fixed_pattern"),
+    rows = [("decoded observations", "n_decoded"), ("rejected: seq.\\ 0xFFFF (narrow-band) report", "rej_fixed_pattern"),
             ("rejected: narrow-band (20\\,MHz) frame", "rej_partial_band"),
             ("rejected: duplicate / non-finite / zero", None), ("valid full-band observations", "n_valid")]
     lines = []
@@ -153,6 +153,7 @@ def main():
     N["insCorrFixed"] = f"{g('cross_capture_profile_corr_0xFFFF'):.2f}"
     N["insCorrNormal"] = f"{g('cross_capture_profile_corr_normal'):.2f}"
     N["insAmpRatio"] = f"{g('median_amplitude_ratio_normal_over_0xFFFF'):.0f}"
+    N["insFfffBand"] = f"{g('0xFFFF_lowest_quarter_minus_rest_log_amp'):.1f}"
     for lab, k in [("sit", "Sit"), ("stand", "Stand"), ("lying", "Lying"), ("walk", "Walk"), ("empty", "Empty")]:
         N[f"insNb{k}"] = f"{100 * g('narrowband_share_of_non_fixed_rows', 'B', lab):.1f}"
         N[f"insMeRaw{k}"] = f"{g('motion_energy_naive_median', 'B', lab):.2f}"

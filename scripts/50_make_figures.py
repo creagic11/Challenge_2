@@ -149,15 +149,15 @@ def qc_types(cfg, out):
     fig, ax = plt.subplots(figsize=(6.4, 2.2))
     sc = np.arange(-128, 128)
     for arr, lab, col in [(full, "valid full-band (80 MHz)", C_ALL), (narrow, "narrow-band frame (rejected)", C_SHARED),
-                          (fixed, "seq. 0xFFFF fixed pattern (rejected)", C_EXCL)]:
+                          (fixed, "seq. 0xFFFF report (rejected)", C_EXCL)]:
         prof = np.fft.fftshift(np.median(np.concatenate(arr), 0))
         ax.plot(sc, prof, color=col, lw=1, label=lab)
     ax.set_xlabel("subcarrier index")
     ax.set_ylabel("median log amplitude\n(rel. to row median)")
-    ax.legend(frameon=False, fontsize=7, loc="lower left")
+    ax.legend(frameon=False, fontsize=7, loc="upper center", bbox_to_anchor=(0.5, 1.22), ncol=3)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    fig.savefig(out / "qc_observation_types.png", dpi=220)
+    fig.savefig(out / "qc_observation_types.png", dpi=220, bbox_inches="tight")
 
 
 def denoise_example(cfg, out):

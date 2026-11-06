@@ -14,10 +14,10 @@ Every number here is produced by `scripts/01_data_inspection.py` (`results/inspe
 | Kind | How identified | Evidence that it is (in)valid |
 |---|---|---|
 | Full-band 80 MHz CSI | >= 3 of the four 20 MHz quarters carry energy; guard bins 123-133 deep | smooth across subcarriers; walk >> stand temporal variance |
-| `0xFFFF` reports (Room A only) | Nexmon sequence field = 0xFFFF; strictly alternate with normal reports | the **same fixed profile in every capture** (mean cross-capture corr. 0.99 vs 0.22 for normal reports), activity-independent temporal variance, no guard nulls, ~34x lower amplitude -> zero-information |
+| `0xFFFF` reports (Room A only) | Nexmon sequence field = 0xFFFF; strictly alternate with normal reports | energy confined to the lowest 20 MHz quarter (like the narrow-band frames), no guard nulls; the band mask makes the profile nearly identical in every capture (corr. 0.99 vs 0.22 for normal reports) and the median data-subcarrier amplitude ~34x lower → not valid 80 MHz observations |
 | Narrow-band (20 MHz) frames (both rooms) | energy in only one quarter (Room A: subcarriers -128..-65; Room B: other quarters) | the other three quarters are at the noise floor (~5 log units lower) -> not a valid 256-subcarrier observation |
 
-Rejected (QC, both splits, all captures): Room A 118,013 fixed-pattern + 47,359 narrow-band of
+Rejected (QC, both splits, all captures): Room A 118,013 seq.-0xFFFF + 47,359 other narrow-band of
 234,239 decoded; Room B 39,196 narrow-band of 600,500 rows. No NaN, zero or duplicate rows.
 
 **Why this matters beyond cleanliness.** In Room B the narrow-band share depends on the class:
